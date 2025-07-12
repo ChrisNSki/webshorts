@@ -1,13 +1,28 @@
 {
   "type": "module",
-  "name": "webshorts",
+  "name": "@chrisnski/webshorts",
   "version": "1.0.3",
   "description": "A lightweight react shortcut system with global and page-level support, build for rapid integration and developer sanity of managing shortcut systems.",
-  "main": "src/index.js",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "bin",
+    "README.md",
+    "LICENSE",
+    "webshorts.config.js"
+  ],
   "scripts": {
     "build": "vite build",
     "dev": "vite build --watch",
-    "test": "echo \\\"No tests currently available\\\" && exit 0"
+    "test": "echo \\\"No tests currently available\\\" && exit 0",
+    "prepublishOnly": "npm run build"
   },
   "bin": {
     "webshorts": "./bin/init.js"
@@ -30,7 +45,7 @@
   "bugs": {
     "url": "https://github.com/ChrisNSki/webshorts/issues"
   },
-  "homepage": "https://github.com/ChrisNSki/webshorts#readme",
+  "homepage": "https://webshorts.dev",
   "devDependencies": {
     "@radix-ui/react-dialog": "^1.1.14",
     "@vitejs/plugin-react": "^4.6.0",

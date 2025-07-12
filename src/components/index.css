@@ -1,0 +1,88 @@
+/* WebShorts HelpDialog Styles */
+
+.webshorts-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+  animation: webshorts-fadeIn 150ms ease-out;
+  pointer-events: auto;
+}
+
+.webshorts-content {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10000;
+  animation: webshorts-slideIn 200ms ease-out;
+  pointer-events: auto;
+}
+
+.webshorts-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.webshorts-empty-icon {
+  margin: 0 auto;
+  height: 3rem;
+  width: 3rem;
+  margin-bottom: 1rem;
+}
+
+.webshorts-empty-text {
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+}
+
+.webshorts-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.webshorts-grid {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.webshorts-shortcut-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.webshorts-shortcut-key {
+  flex-shrink: 0;
+}
+
+.webshorts-shortcut-content {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Animations */
+@keyframes webshorts-fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes webshorts-slideIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}

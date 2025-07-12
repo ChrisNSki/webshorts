@@ -12,6 +12,7 @@ export default defineConfig({
     rollupOptions: {
       external: ['react', 'react-dom'],
     },
+    cssCodeSplit: false,
   },
   plugins: [react()],
 });

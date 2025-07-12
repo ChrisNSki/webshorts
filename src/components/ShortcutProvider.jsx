@@ -1,12 +1,12 @@
-import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
+import * as React from 'react';
 import { eventToKeyObj, matchShortcut } from '../utils/matchShortcut.js';
 import { parseKeys, keysToString } from '../utils/parseKeys.js';
 import { debugShortcutExecution, debugShortcutNotFound, debugHelpDialog } from '../utils/debugTools.js';
 
-const ShortcutContext = createContext();
+const ShortcutContext = React.createContext();
 
 export const useShortcuts = () => {
-  const context = useContext(ShortcutContext);
+  const context = React.useContext(ShortcutContext);
   if (!context) {
     throw new Error('useShortcuts must be used within a ShortcutProvider');
   }
@@ -14,9 +14,9 @@ export const useShortcuts = () => {
 };
 
 const ShortcutProvider = ({ children, config = null, currentPage = '/', className = '', style = {} }) => {
-  const [shortcuts, setShortcuts] = useState(new Map());
-  const [helpDialogOpen, setHelpDialogOpen] = useState(false);
-  const [options, setOptions] = useState({
+  const [shortcuts, setShortcuts] = React.useState(new Map());
+  const [helpDialogOpen, setHelpDialogOpen] = React.useState(false);
+  const [options, setOptions] = React.useState({
     debug: false,
     showDescriptions: true,
     helpDialogColumns: 2,
@@ -25,7 +25,7 @@ const ShortcutProvider = ({ children, config = null, currentPage = '/', classNam
   });
 
   // Register a shortcut
-  const registerShortcut = useCallback(
+  const registerShortcut = React.useCallback(
     (shortcut, page = currentPage) => {
       const keyObj = parseKeys(shortcut.keys);
       if (!keyObj) {
@@ -54,7 +54,7 @@ const ShortcutProvider = ({ children, config = null, currentPage = '/', classNam
   );
 
   // Unregister a shortcut
-  const unregisterShortcut = useCallback(
+  const unregisterShortcut = React.useCallback(
     (keys, page = currentPage) => {
       const shortcutId = `${page}:${keys}`;
       setShortcuts((prev) => {
@@ -67,7 +67,7 @@ const ShortcutProvider = ({ children, config = null, currentPage = '/', classNam
   );
 
   // Handle keyboard events
-  const handleKeyDown = useCallback(
+  const handleKeyDown = React.useCallback(
     (event) => {
       // Ignore if typing in input fields
       if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA' || event.target.contentEditable === 'true') {
@@ -124,7 +124,7 @@ const ShortcutProvider = ({ children, config = null, currentPage = '/', classNam
   );
 
   // Load shortcuts from config prop if provided
-  useEffect(() => {
+  React.useEffect(() => {
     if (!config) return;
 
     // Clear all shortcuts before registering new ones
@@ -150,7 +150,7 @@ const ShortcutProvider = ({ children, config = null, currentPage = '/', classNam
   }, [config, currentPage, registerShortcut]);
 
   // When loading from auto config, pass the full shortcut object
-  useEffect(() => {
+  React.useEffect(() => {
     const loadConfig = async () => {
       try {
         // Try to load the config file automatically
@@ -197,7 +197,7 @@ const ShortcutProvider = ({ children, config = null, currentPage = '/', classNam
   }, [currentPage]);
 
   // Add global keyboard listener
-  useEffect(() => {
+  React.useEffect(() => {
     document.addEventListener('keydown', handleKeyDown);
     return () => {
       document.removeEventListener('keydown', handleKeyDown);

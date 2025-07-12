@@ -6,40 +6,30 @@ A lightweight React shortcut system for global + page-level hotkeys. Drop in a p
 
 ## Peer Dependencies
 
-WebShorts requires @radix-ui/react-dialog, sonner, tailwindcss, react, and react-dom as dependencies.
-
-**Note:** If you're not using Tailwind CSS, you can still use WebShorts - just make sure to install the other peer dependencies.
+WebShorts requires @radix-ui/react-dialog, sonner, react, and react-dom as dependencies.
 
 ## Quick Start
 
-### 1. Install Dependencies
+> **Note for Next.js App Router users:** Next.js requires additional configuration to work with WebShorts. See [Next.js App Router Usage](#nextjs-app-router-usage) for important integration details.
 
-Install the required peer dependencies:
+### 1. Install WebShorts and Dependencies
 
-```bash
-npm install @radix-ui/react-dialog sonner
-```
-
-> **Note:** You must already have `react` and `react-dom` installed (required for all React projects).
-> For Tailwind CSS, follow the [official Tailwind CSS installation guide](https://tailwindcss.com/docs/installation) to add it to your project.
-
-### 2. Install WebShorts
+Install WebShorts and let it automatically install the required dependencies:
 
 ```bash
 npm i @chrisnski/webshorts
-```
-
-### 3. Generate the config file
-
-After installing, run:
-
-```bash
 npx webshorts init
 ```
 
-This will create a `webshorts.config.js` file in your project root.
+The `npx webshorts init` command will:
 
-### 4. Wrap your app with WebShortsProvider
+- Create a `webshorts.config.js` file in your project root
+- Automatically install `@radix-ui/react-dialog` and `sonner` as dependencies
+- Detect your package manager (npm, yarn, or pnpm) and use the appropriate install command
+
+> **Note:** You must already have `react` and `react-dom` installed (required for all React projects).
+
+### 2. Wrap your app with WebShortsProvider
 
 ```jsx
 import { WebShortsProvider, WebShortsDialog } from '@chrisnski/webshorts';
@@ -54,7 +44,9 @@ function App() {
 }
 ```
 
-### 5. Add page-specific shortcuts
+> **Note:** Default styles are included automatically. You can override any part of the dialog with your own classes.
+
+### 3. Add page-specific shortcuts
 
 ```jsx
 import { ShortcutListener } from '@chrisnski/webshorts';
@@ -78,7 +70,7 @@ function MyPage() {
 }
 ```
 
-### 6. Configure your shortcuts
+### 4. Configure your shortcuts
 
 Create a `webshorts.config.js` file in your project root:
 
@@ -132,6 +124,48 @@ const shortcutsConfig = {
 export default shortcutsConfig;
 ```
 
+---
+
+## Next.js App Router Usage
+
+If you are using **Next.js App Router** (the `/app` directory), you must use a client wrapper for any context provider or hook-based library, including WebShorts. This is required to support both SSR/metadata and client context/hooks.
+
+**Example:**
+
+```jsx
+// app/layout.js (Server Component)
+export const metadata = { ... };
+import WebShortsProviderWrapper from '../components/WebShortsProviderWrapper';
+
+export default function RootLayout({ children }) {
+  return (
+    <html>
+      <body>
+        <WebShortsProviderWrapper>
+          {children}
+        </WebShortsProviderWrapper>
+      </body>
+    </html>
+  );
+}
+```
+
+```jsx
+// components/WebShortsProviderWrapper.jsx (Client Component)
+'use client';
+import { WebShortsProvider, WebShortsDialog } from '@chrisnski/webshorts';
+export default function WebShortsProviderWrapper({ children }) {
+  return (
+    <WebShortsProvider>
+      {children}
+      <WebShortsDialog />
+    </WebShortsProvider>
+  );
+}
+```
+
+> This pattern is required for all context/hook-based libraries in Next.js App Router. See the [Next.js docs](https://nextjs.org/docs/app/building-your-application/rendering/composition-patterns#using-context-in-server-components) for more details.
+
 ## Features
 
 ### 🔥 Universal Help Dialog
@@ -153,7 +187,13 @@ Get toast notifications showing:
 
 ### 🎨 Flexible Styling
 
-Works with Tailwind CSS, styled-components, or any CSS solution.
+WebShorts components come with sensible default styles but accept custom CSS classes for complete styling control. You can override any part of the dialog with your own classes.
+
+**Default Styling:**
+The dialog includes basic positioning, animations, and layout styles. You can override these by providing your own classes.
+
+**Default Styling:**
+The dialog includes complete styling with a clean, modern design. All styles are included automatically - no additional CSS imports needed.
 
 ### 📱 Framework Agnostic
 

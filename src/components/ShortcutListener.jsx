@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import * as React from 'react';
 import { useShortcuts } from './ShortcutProvider.jsx';
 
 const ShortcutListener = ({ keys, action, page = null, children = null }) => {
@@ -6,7 +6,7 @@ const ShortcutListener = ({ keys, action, page = null, children = null }) => {
 
   const targetPage = page || currentPage;
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (!keys || !action) {
       console.warn('ShortcutListener: keys and action are required');
       return;

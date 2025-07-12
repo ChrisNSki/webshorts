@@ -33,10 +33,11 @@ The `npx webshorts init` command will:
 
 ```jsx
 import { WebShortsProvider, WebShortsDialog } from '@chrisnski/webshorts';
+import shortcutsConfig from './webshorts.config.js';
 
 function App() {
   return (
-    <WebShortsProvider>
+    <WebShortsProvider config={shortcutsConfig}>
       <YourApp />
       <WebShortsDialog />
     </WebShortsProvider>
@@ -45,6 +46,8 @@ function App() {
 ```
 
 > **Note:** Default styles are included automatically. You can override any part of the dialog with your own classes.
+>
+> **Config Loading:** For production builds, it's recommended to import and pass the config as a prop rather than relying on auto-loading.
 
 ### 3. Add page-specific shortcuts
 
@@ -184,16 +187,6 @@ Get toast notifications showing:
 - When shortcuts are executed
 - When shortcuts fail
 - When no shortcut is found
-
-### 🎨 Flexible Styling
-
-WebShorts components come with sensible default styles but accept custom CSS classes for complete styling control. You can override any part of the dialog with your own classes.
-
-**Default Styling:**
-The dialog includes basic positioning, animations, and layout styles. You can override these by providing your own classes.
-
-**Default Styling:**
-The dialog includes complete styling with a clean, modern design. All styles are included automatically - no additional CSS imports needed.
 
 ### 📱 Framework Agnostic
 

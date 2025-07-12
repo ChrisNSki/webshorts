@@ -149,53 +149,6 @@ const ShortcutProvider = ({ children, config = null, currentPage = '/', classNam
     }
   }, [config, currentPage, registerShortcut]);
 
-  // When loading from auto config, pass the full shortcut object
-  React.useEffect(() => {
-    const loadConfig = async () => {
-      try {
-        // Try to load the config file automatically
-        const configModule = await import('/webshorts.config.js');
-        const loadedConfig = configModule.default || configModule;
-
-        if (loadedConfig) {
-          // Merge options
-          setOptions((prev) => ({
-            ...prev,
-            ...loadedConfig.WEBSHORTS_OPTIONS,
-          }));
-
-          // Clear all shortcuts before registering new ones
-          setShortcuts(new Map());
-
-          // Load global shortcuts
-          if (loadedConfig['*']) {
-            loadedConfig['*'].forEach((shortcut) => {
-              if (shortcut.keys && shortcut.action) {
-                registerShortcut(shortcut, '*');
-              }
-            });
-          }
-
-          // Load only the current page's shortcuts
-          if (loadedConfig[currentPage]) {
-            loadedConfig[currentPage].forEach((shortcut) => {
-              if (shortcut.keys && shortcut.action) {
-                registerShortcut(shortcut, currentPage);
-              }
-            });
-          }
-        }
-      } catch (error) {
-        console.warn('WebShorts: Could not load webshorts.config.js automatically. You can pass config as a prop or create the config file.');
-      }
-    };
-
-    // If no config is passed as prop, try to load from file
-    if (!config) {
-      loadConfig();
-    }
-  }, [currentPage]);
-
   // Add global keyboard listener
   React.useEffect(() => {
     document.addEventListener('keydown', handleKeyDown);

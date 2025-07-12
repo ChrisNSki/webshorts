@@ -57,11 +57,14 @@ try {
   }
 
   console.log('\n🎉 WebShorts is ready to use!');
-  console.log('   - Add WebShortsProvider to your app');
+  console.log('   - Import your config: import shortcutsConfig from "./webshorts.config.js"');
+  console.log('   - Add WebShortsProvider with config: <WebShortsProvider config={shortcutsConfig}>');
   console.log('   - Use ShortcutListener to register shortcuts');
   console.log('   - Press Shift + ? to open the help dialog');
   console.log('\n📝 Example:');
   console.log('   import { WebShortsProvider, WebShortsDialog } from "@chrisnski/webshorts";');
+  console.log('   import shortcutsConfig from "./webshorts.config.js";');
+  console.log('   <WebShortsProvider config={shortcutsConfig}>');
 } catch (err) {
   console.error('❌ Failed to create webshorts.config.js:', err.message);
   process.exit(1);

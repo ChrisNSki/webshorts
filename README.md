@@ -6,19 +6,30 @@ A lightweight React shortcut system for global + page-level hotkeys. Drop in a p
 
 ## Peer Dependencies
 
-WebShorts requires @radix-ui/react-dialog, sonner, and tailwindcss as dependencies.
+WebShorts requires @radix-ui/react-dialog, sonner, tailwindcss, react, and react-dom as dependencies.
 
 **Note:** If you're not using Tailwind CSS, you can still use WebShorts - just make sure to install the other peer dependencies.
 
 ## Quick Start
 
-### 1. Install WebShorts
+### 1. Install Dependencies
+
+Install the required peer dependencies:
+
+```bash
+npm install @radix-ui/react-dialog sonner
+```
+
+> **Note:** You must already have `react` and `react-dom` installed (required for all React projects).
+> For Tailwind CSS, follow the [official Tailwind CSS installation guide](https://tailwindcss.com/docs/installation) to add it to your project.
+
+### 2. Install WebShorts
 
 ```bash
 npm i @chrisnski/webshorts
 ```
 
-### 2. Generate the config file
+### 3. Generate the config file
 
 After installing, run:
 
@@ -28,22 +39,22 @@ npx webshorts init
 
 This will create a `webshorts.config.js` file in your project root.
 
-### 3. Wrap your app with WebShortsProvider
+### 4. Wrap your app with WebShortsProvider
 
 ```jsx
-import { WebShortsProvider, WebShortsDialogue } from '@chrisnski/webshorts';
+import { WebShortsProvider, WebShortsDialog } from '@chrisnski/webshorts';
 
 function App() {
   return (
     <WebShortsProvider>
       <YourApp />
-      <WebShortsDialogue />
+      <WebShortsDialog />
     </WebShortsProvider>
   );
 }
 ```
 
-### 4. Add page-specific shortcuts
+### 5. Add page-specific shortcuts
 
 ```jsx
 import { ShortcutListener } from '@chrisnski/webshorts';
@@ -67,7 +78,7 @@ function MyPage() {
 }
 ```
 
-### 5. Configure your shortcuts
+### 6. Configure your shortcuts
 
 Create a `webshorts.config.js` file in your project root:
 
@@ -184,12 +195,12 @@ Register page-specific shortcuts.
 - `page` - Page where this shortcut is active (optional)
 - `children` - Optional children to render
 
-### WebShortsDialogue
+### WebShortsDialog
 
 The help dialog component that shows all available shortcuts.
 
 ```jsx
-<WebShortsDialogue />
+<WebShortsDialog />
 ```
 
 No props required - automatically uses context from WebShortsProvider.
@@ -278,7 +289,7 @@ Supported key combinations:
 
 ```jsx
 // app/layout.jsx
-import { WebShortsProvider, WebShortsDialogue } from '@chrisnski/webshorts';
+import { WebShortsProvider, WebShortsDialog } from '@chrisnski/webshorts';
 
 export default function RootLayout({ children }) {
   return (
@@ -286,7 +297,7 @@ export default function RootLayout({ children }) {
       <body>
         <WebShortsProvider>
           {children}
-          <WebShortsDialogue />
+          <WebShortsDialog />
         </WebShortsProvider>
       </body>
     </html>
@@ -298,7 +309,7 @@ export default function RootLayout({ children }) {
 
 ```jsx
 // App.jsx
-import { WebShortsProvider, WebShortsDialogue } from '@chrisnski/webshorts';
+import { WebShortsProvider, WebShortsDialog } from '@chrisnski/webshorts';
 
 function App() {
   return (
@@ -308,7 +319,7 @@ function App() {
         <Main />
         <Footer />
       </div>
-      <WebShortsDialogue />
+      <WebShortsDialog />
     </WebShortsProvider>
   );
 }
@@ -339,7 +350,7 @@ function App() {
 Make sure you've installed all peer dependencies:
 
 ```bash
-npm install @radix-ui/react-dialog sonner tailwindcss
+npm install @radix-ui/react-dialog sonner react react-dom
 ```
 
 **2. Toasts not showing**

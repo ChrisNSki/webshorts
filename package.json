@@ -1,0 +1,46 @@
+{
+  "type": "module",
+  "name": "webshorts",
+  "version": "1.0.3",
+  "description": "A lightweight react shortcut system with global and page-level support, build for rapid integration and developer sanity of managing shortcut systems.",
+  "main": "src/index.js",
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite build --watch",
+    "test": "echo \\\"No tests currently available\\\" && exit 0"
+  },
+  "bin": {
+    "webshorts": "./bin/init.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ChrisNSki/webshorts.git"
+  },
+  "keywords": [
+    "shortcuts",
+    "keyboard",
+    "hotkeys",
+    "react",
+    "context",
+    "productivity",
+    "webshorts"
+  ],
+  "author": "Chris Narowski",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ChrisNSki/webshorts/issues"
+  },
+  "homepage": "https://github.com/ChrisNSki/webshorts#readme",
+  "devDependencies": {
+    "@radix-ui/react-dialog": "^1.1.14",
+    "@vitejs/plugin-react": "^4.6.0",
+    "sonner": "^2.0.6",
+    "vite": "^7.0.4",
+    "vite-plugin-dts": "^4.5.4"
+  },
+  "peerDependencies": {
+    "@radix-ui/react-dialog": "^1.1.14",
+    "sonner": "^2.0.6",
+    "tailwindcss": "^4.1.11"
+  }
+}

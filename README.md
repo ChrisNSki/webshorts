@@ -2,7 +2,7 @@
 
 A lightweight React shortcut system for global + page-level hotkeys. Drop in a provider, register with a component, and let the keys do the work.
 
-🌐 **[Live Demo](https://webshorts.dev)** | 📖 **[Documentation](https://webshorts.dev)** | 💬 **[Discord](https://discord.gg/webshorts)** | 🐛 **[Issues](https://github.com/ChrisNSki/webshorts/issues)**
+🌐 **[Live Demo](https://webshorts.dev)** | 💬 **[Discord](https://discord.gg/HXg4YxJgfX)** | 🐛 **[Issues](https://github.com/ChrisNSki/webshorts/issues)**
 
 ## Peer Dependencies
 

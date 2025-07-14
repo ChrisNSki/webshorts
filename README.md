@@ -41,11 +41,22 @@ function App() {
 }
 ```
 
-> **Note:** Default styles are included automatically. Upcoming releases will allow you to override any part of the dialog with your own classes.
+> **Quick Notes**
 >
-> **Config Loading:** For production builds, it's recommended to import and pass the config as a prop rather than relying on auto-loading.
+> - Default styles are included automatically, but can be overridden.
+> - The config must be included!
 
-### 3. Add page-specific shortcuts
+---
+
+At this point the install can be used as is, and managed from the webshorts config if you are using global shortcuts only.
+
+For page specific shortcuts, it's recommended to continue to step 3 and use Shortcut Listeners.
+
+---
+
+### Adding page-specific shortcuts
+
+When you want to add a shortcut that is page specific, you can do it in the config, or add a shortcut listener to the page/component the shortcut applies to.
 
 ```jsx
 import { ShortcutListener } from '@chrisnski/webshorts';
@@ -69,15 +80,20 @@ function MyPage() {
 }
 ```
 
-### 4. Configure your shortcuts
+Configuring your shortcuts
 
-Create a `webshorts.config.js` file in your project root:
+Within the `webshorts.config.js` in your project root (created during the initialize command)
+
+mKeys - the keyboard shortcuts to use
+shortName - the short name of the action that will be performed
+description - the description of the action that will be performed.
+action - the function to call, or you can build a function directly in the config!
 
 ```js
 // webshorts.config.js
 const shortcutsConfig = {
   WEBSHORTS_OPTIONS: {
-    debug: true, // Show toast notifications
+    debug: true, // Show toast notifications, disabled by default
     showDescriptions: true, // Show descriptions in help dialog
     helpDialogColumns: 2, // Number of columns in help dialog
     dialogWidth: 800, // Help dialog width
@@ -100,7 +116,7 @@ const shortcutsConfig = {
     },
   ],
 
-  // Page-specific shortcuts
+  // Page-specific shortcuts (These can alternatively be pulled from the Shortcut Listeners)
   '/dashboard': [
     {
       keys: 'CTRL + S',
@@ -357,19 +373,201 @@ All styles use CSS custom properties that can be overridden. Only the properties
 
 ### useShortcuts Hook
 
-Access the shortcuts context.
+The `useShortcuts` hook provides **programmatic access** to the WebShorts context, allowing you to register shortcuts dynamically, control the help dialog, and access the current shortcut state.
 
 ```jsx
 import { useShortcuts } from '@chrisnski/webshorts';
 
 function MyComponent() {
-  const { shortcuts, registerShortcut, unregisterShortcut, helpDialogOpen, setHelpDialogOpen, options, currentPage } = useShortcuts();
+  const {
+    shortcuts, // Array of all registered shortcuts
+    registerShortcut, // Function to register new shortcuts
+    unregisterShortcut, // Function to remove shortcuts
+    helpDialogOpen, // Boolean - is help dialog open?
+    setHelpDialogOpen, // Function to open/close help dialog
+    options, // Current WebShorts options
+    currentPage, // Current page path
+  } = useShortcuts();
 
   // Use the context values
 }
 ```
 
-**Note:** The `registerShortcut` function expects a shortcut object with `keys` and `action` properties, not separate parameters.
+#### What It Returns
+
+| Property             | Type       | Description                               |
+| -------------------- | ---------- | ----------------------------------------- |
+| `shortcuts`          | `Array`    | All registered shortcuts with metadata    |
+| `registerShortcut`   | `Function` | Register a new shortcut programmatically  |
+| `unregisterShortcut` | `Function` | Remove a shortcut by keys and page        |
+| `helpDialogOpen`     | `Boolean`  | Whether the help dialog is currently open |
+| `setHelpDialogOpen`  | `Function` | Open or close the help dialog             |
+| `options`            | `Object`   | Current WebShorts configuration options   |
+| `currentPage`        | `String`   | Current page path                         |
+
+#### Basic Usage Examples
+
+**1. Register a Shortcut Programmatically**
+
+```jsx
+function EditorComponent() {
+  const { registerShortcut } = useShortcuts();
+
+  React.useEffect(() => {
+    registerShortcut({
+      keys: 'CTRL + S',
+      shortName: 'Save Document',
+      description: 'Save the current document',
+      action: () => saveDocument(),
+    });
+  }, []);
+
+  return <div>Editor Component</div>;
+}
+```
+
+**2. Dynamic Shortcut Registration with Cleanup**
+
+```jsx
+function DynamicComponent() {
+  const { registerShortcut, unregisterShortcut } = useShortcuts();
+
+  React.useEffect(() => {
+    // Register shortcuts when component mounts
+    registerShortcut({
+      keys: 'CTRL + B',
+      shortName: 'Bold Text',
+      action: () => formatText('bold'),
+    });
+
+    registerShortcut({
+      keys: 'CTRL + I',
+      shortName: 'Italic Text',
+      action: () => formatText('italic'),
+    });
+
+    // Cleanup when component unmounts
+    return () => {
+      unregisterShortcut('CTRL + B');
+      unregisterShortcut('CTRL + I');
+    };
+  }, []);
+}
+```
+
+**3. Control Help Dialog Programmatically**
+
+```jsx
+function HelpButton() {
+  const { setHelpDialogOpen } = useShortcuts();
+
+  return <button onClick={() => setHelpDialogOpen(true)}>Show Shortcuts</button>;
+}
+```
+
+**4. Access Current Shortcuts**
+
+```jsx
+function ShortcutList() {
+  const { shortcuts, currentPage } = useShortcuts();
+
+  const currentShortcuts = shortcuts.filter((s) => s.page === currentPage || s.page === '*');
+
+  return (
+    <div>
+      <h3>Available Shortcuts:</h3>
+      {currentShortcuts.map((shortcut) => (
+        <div key={shortcut.keysString}>
+          <strong>{shortcut.keysString}</strong> - {shortcut.shortName}
+          {shortcut.description && <p>{shortcut.description}</p>}
+        </div>
+      ))}
+    </div>
+  );
+}
+```
+
+**5. Conditional Shortcuts Based on State**
+
+```jsx
+function ConditionalShortcuts() {
+  const { registerShortcut, unregisterShortcut } = useShortcuts();
+  const [isEditing, setIsEditing] = React.useState(false);
+
+  React.useEffect(() => {
+    if (isEditing) {
+      // Register editing shortcuts
+      registerShortcut({
+        keys: 'ESC',
+        shortName: 'Cancel Edit',
+        action: () => setIsEditing(false),
+      });
+    } else {
+      // Remove editing shortcuts
+      unregisterShortcut('ESC');
+    }
+  }, [isEditing]);
+
+  return (
+    <div>
+      <button onClick={() => setIsEditing(!isEditing)}>{isEditing ? 'Stop Editing' : 'Start Editing'}</button>
+    </div>
+  );
+}
+```
+
+#### Important Notes
+
+- **Must be used within a `WebShortsProvider`** - The hook will throw an error if used outside the provider
+- **`registerShortcut` expects a shortcut object** - Not separate parameters like `registerShortcut(keys, action)`
+- **Automatic page scoping** - Shortcuts are registered for the current page unless specified otherwise
+- **Read-only state access** - The hook provides access to the internal state but doesn't allow direct modification
+- **Component lifecycle integration** - Perfect for registering shortcuts when components mount and cleaning up when they unmount
+
+#### Advanced Usage
+
+**Register Shortcuts for Specific Pages**
+
+```jsx
+function MultiPageComponent() {
+  const { registerShortcut } = useShortcuts();
+
+  React.useEffect(() => {
+    // Register for current page
+    registerShortcut({
+      keys: 'CTRL + S',
+      shortName: 'Save',
+      action: () => save(),
+    });
+
+    // Register for specific page
+    registerShortcut(
+      {
+        keys: 'CTRL + P',
+        shortName: 'Print',
+        action: () => print(),
+      },
+      '/print-page'
+    ); // Specify page explicitly
+  }, []);
+}
+```
+
+**Access Debug Information**
+
+```jsx
+function DebugComponent() {
+  const { options, shortcuts } = useShortcuts();
+
+  return (
+    <div>
+      <p>Debug mode: {options.debug ? 'Enabled' : 'Disabled'}</p>
+      <p>Total shortcuts: {shortcuts.length}</p>
+      <p>Current page: {options.currentPage}</p>
+    </div>
+  );
+}
+```
 
 ## Configuration
 

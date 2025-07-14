@@ -2,7 +2,7 @@
   "type": "module",
   "name": "@chrisnski/webshorts",
   "version": "1.0.10",
-  "description": "A lightweight react shortcut system with global and page-level support, build for rapid integration and developer sanity of managing shortcut systems.",
+  "description": "A lightweight react shortcut system with global and page-level support, built for developer sanity of quickly managing shortcut systems.",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "exports": {

@@ -4,10 +4,6 @@ A lightweight React shortcut system for global + page-level hotkeys. Drop in a p
 
 🌐 **[Live Demo](https://webshorts.dev)** | 💬 **[Discord](https://discord.gg/HXg4YxJgfX)** | 🐛 **[Issues](https://github.com/ChrisNSki/webshorts/issues)**
 
-## Peer Dependencies
-
-WebShorts requires @radix-ui/react-dialog, sonner, react, and react-dom as dependencies.
-
 ## Quick Start
 
 > **Note for Next.js App Router users:** Next.js requires additional configuration to work with WebShorts. See [Next.js App Router Usage](#nextjs-app-router-usage) for important integration details.
@@ -25,7 +21,7 @@ The `npx webshorts init` command will:
 
 - Create a `webshorts.config.js` file in your project root
 - Automatically install `@radix-ui/react-dialog` and `sonner` as dependencies
-- Detect your package manager (npm, yarn, or pnpm) and use the appropriate install command
+- Detects your package manager (npm, yarn, or pnpm) to use the appropriate install command
 
 > **Note:** You must already have `react` and `react-dom` installed (required for all React projects).
 
@@ -45,7 +41,7 @@ function App() {
 }
 ```
 
-> **Note:** Default styles are included automatically. You can override any part of the dialog with your own classes.
+> **Note:** Default styles are included automatically. Upcoming releases will allow you to override any part of the dialog with your own classes.
 >
 > **Config Loading:** For production builds, it's recommended to import and pass the config as a prop rather than relying on auto-loading.
 
@@ -237,6 +233,127 @@ The help dialog component that shows all available shortcuts.
 ```
 
 No props required - automatically uses context from WebShortsProvider.
+
+#### Customizing the Help Dialog
+
+WebShortsDialog supports comprehensive style customization through props. You can override any part of the dialog's appearance:
+
+```jsx
+<WebShortsDialog
+  // General styling
+  className='my-custom-dialog'
+  style={{ '--webshorts-content-bg': '#1a1a1a' }}
+  // Overlay styling
+  overlayClassName='my-overlay'
+  overlayStyle={{ '--webshorts-overlay-bg': 'rgba(0,0,0,0.8)' }}
+  // Content styling
+  contentClassName='my-content'
+  contentStyle={{
+    '--webshorts-content-bg': '#1a1a1a',
+    '--webshorts-content-border-radius': '12px',
+    '--webshorts-content-padding': '2rem',
+  }}
+  // Header styling
+  headerClassName='my-header'
+  headerStyle={{
+    '--webshorts-header-font-size': '1.5rem',
+    '--webshorts-header-font-weight': '700',
+  }}
+  // Close button styling
+  closeButtonClassName='my-close-btn'
+  closeButtonStyle={{
+    '--webshorts-close-button-bg': '#333',
+    '--webshorts-close-button-hover-bg': '#555',
+  }}
+  // Shortcut key styling
+  shortcutKeyStyle={{
+    '--webshorts-shortcut-key-bg': '#333',
+    '--webshorts-shortcut-key-color': '#fff',
+    '--webshorts-shortcut-key-border-radius': '6px',
+  }}
+  // Shortcut text styling
+  shortcutNameStyle={{
+    '--webshorts-shortcut-name-color': '#fff',
+  }}
+  shortcutDescriptionStyle={{
+    '--webshorts-shortcut-description-color': '#ccc',
+  }}
+/>
+```
+
+#### Available Style Props
+
+| Prop                                                        | Description                      |
+| ----------------------------------------------------------- | -------------------------------- |
+| `className` / `style`                                       | General dialog styling           |
+| `overlayClassName` / `overlayStyle`                         | Background overlay styling       |
+| `contentClassName` / `contentStyle`                         | Main dialog content styling      |
+| `headerClassName` / `headerStyle`                           | Header section styling           |
+| `closeButtonClassName` / `closeButtonStyle`                 | Close button styling             |
+| `sectionsClassName` / `sectionsStyle`                       | Sections container styling       |
+| `sectionTitleClassName` / `sectionTitleStyle`               | Section title styling            |
+| `gridClassName` / `gridStyle`                               | Grid layout styling              |
+| `shortcutItemClassName` / `shortcutItemStyle`               | Individual shortcut item styling |
+| `shortcutKeyClassName` / `shortcutKeyStyle`                 | Keyboard key styling             |
+| `shortcutContentClassName` / `shortcutContentStyle`         | Shortcut content area styling    |
+| `shortcutNameClassName` / `shortcutNameStyle`               | Shortcut name styling            |
+| `shortcutDescriptionClassName` / `shortcutDescriptionStyle` | Shortcut description styling     |
+| `footerClassName` / `footerStyle`                           | Footer styling                   |
+| `emptyIconClassName` / `emptyIconStyle`                     | Empty state icon styling         |
+| `emptyTextClassName` / `emptyTextStyle`                     | Empty state text styling         |
+
+#### CSS Custom Properties
+
+All styles use CSS custom properties that can be overridden. Only the properties you explicitly set will override the defaults:
+
+```jsx
+// Only changes the background - everything else stays default
+<WebShortsDialog
+  contentStyle={{
+    '--webshorts-content-bg': '#1a1a1a'
+  }}
+/>
+
+// Multiple overrides
+<WebShortsDialog
+  contentStyle={{
+    '--webshorts-content-bg': '#1a1a1a',
+    '--webshorts-content-border-radius': '12px'
+  }}
+  shortcutKeyStyle={{
+    '--webshorts-shortcut-key-bg': '#333',
+    '--webshorts-shortcut-key-color': '#fff'
+  }}
+/>
+```
+
+#### Dark Theme Example
+
+```jsx
+<WebShortsDialog
+  contentStyle={{
+    '--webshorts-content-bg': '#1a1a1a',
+    '--webshorts-content-border-radius': '12px',
+  }}
+  headerStyle={{
+    '--webshorts-header-font-weight': '600',
+  }}
+  shortcutKeyStyle={{
+    '--webshorts-shortcut-key-bg': '#333',
+    '--webshorts-shortcut-key-color': '#fff',
+    '--webshorts-shortcut-key-border-radius': '6px',
+  }}
+  shortcutNameStyle={{
+    '--webshorts-shortcut-name-color': '#fff',
+  }}
+  shortcutDescriptionStyle={{
+    '--webshorts-shortcut-description-color': '#ccc',
+  }}
+  footerStyle={{
+    '--webshorts-footer-color': '#ccc',
+  }}
+/>
+```
 
 ### useShortcuts Hook
 

@@ -232,7 +232,11 @@ const HelpDialog = ({
               '--webshorts-content-padding': contentStyle['--webshorts-content-padding'],
               ...contentStyle,
             }}
+            aria-describedby='webshorts-help-dialog-desc'
           >
+            <span id='webshorts-help-dialog-desc' style={{ display: 'none' }}>
+              This dialog lists all available keyboard shortcuts for this page.
+            </span>
             <div
               className={`webshorts-header ${headerClassName}`}
               style={{
@@ -243,6 +247,7 @@ const HelpDialog = ({
               }}
             >
               <Dialog.Title>Keyboard Shortcuts</Dialog.Title>
+              <Dialog.Description>This dialog lists all available keyboard shortcuts for this page.</Dialog.Description>
               <Dialog.Close
                 className={`webshorts-close-button ${closeButtonClassName}`}
                 style={{

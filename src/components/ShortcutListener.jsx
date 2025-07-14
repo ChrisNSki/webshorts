@@ -1,9 +1,8 @@
 import * as React from 'react';
 import { useShortcuts } from './ShortcutProvider.jsx';
 
-const ShortcutListener = ({ keys, action, page = null, children = null }) => {
+const ShortcutListener = ({ keys, action, description, shortName, page = null, children = null }) => {
   const { registerShortcut, unregisterShortcut, currentPage } = useShortcuts();
-
   const targetPage = page || currentPage;
 
   React.useEffect(() => {
@@ -12,16 +11,15 @@ const ShortcutListener = ({ keys, action, page = null, children = null }) => {
       return;
     }
 
-    // Register the shortcut
-    registerShortcut(keys, action, targetPage);
+    // Register the shortcut with all metadata
+    registerShortcut({ keys, action, description, shortName }, targetPage);
 
     // Cleanup: unregister when component unmounts
     return () => {
       unregisterShortcut(keys, targetPage);
     };
-  }, [keys, action, targetPage, registerShortcut, unregisterShortcut]);
+  }, [keys, action, description, shortName, targetPage, registerShortcut, unregisterShortcut]);
 
-  // This component doesn't render anything visible
   return children || null;
 };
 

@@ -36,6 +36,7 @@ const HelpDialog = ({
   emptyIconStyle = {},
   emptyTextClassName = '',
   emptyTextStyle = {},
+  description = 'This dialog lists all available keyboard shortcuts for this page.',
 }) => {
   const { helpDialogOpen, setHelpDialogOpen, shortcuts, options, currentPage } = useShortcuts();
   const [mounted, setMounted] = React.useState(false);
@@ -170,6 +171,12 @@ const HelpDialog = ({
           color: var(--webshorts-shortcut-key-color, #000000);
         }
 
+        .webshorts-help-dialog-desc {
+          font-weight: var(--webshorts-help-dialog-desc-font-weight, 400);
+          font-size: var(--webshorts-help-dialog-desc-font-size, 0.875rem);
+          color: var(--webshorts-help-dialog-desc-color, #000000);
+        }
+
         .webshorts-shortcut-name {
           font-size: var(--webshorts-shortcut-name-font-size, 0.875rem);
           font-weight: var(--webshorts-shortcut-name-font-weight, 600);
@@ -193,6 +200,13 @@ const HelpDialog = ({
           align-items: end;
           font-size: var(--webshorts-footer-font-size, 0.875rem);
           color: var(--webshorts-footer-color, #000000);
+        }
+
+        .webshorts-help-dialog-description {
+          font-weight: 400;
+          font-size: 0.95rem;
+          color: #333;
+          margin-top: 0.25rem;
         }
 
         @keyframes webshorts-fadeIn {
@@ -235,7 +249,7 @@ const HelpDialog = ({
             aria-describedby='webshorts-help-dialog-desc'
           >
             <span id='webshorts-help-dialog-desc' style={{ display: 'none' }}>
-              This dialog lists all available keyboard shortcuts for this page.
+              {description}
             </span>
             <div
               className={`webshorts-header ${headerClassName}`}
@@ -246,8 +260,10 @@ const HelpDialog = ({
                 ...headerStyle,
               }}
             >
-              <Dialog.Title>Keyboard Shortcuts</Dialog.Title>
-              <Dialog.Description>This dialog lists all available keyboard shortcuts for this page.</Dialog.Description>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                <Dialog.Title>Keyboard Shortcuts</Dialog.Title>
+                <Dialog.Description className='webshorts-help-dialog-description'>{description}</Dialog.Description>
+              </div>
               <Dialog.Close
                 className={`webshorts-close-button ${closeButtonClassName}`}
                 style={{

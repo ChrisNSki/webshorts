@@ -205,7 +205,28 @@ Register page-specific shortcuts.
 The help dialog component that shows all available shortcuts. Now includes accessibility improvements for screen readers.
 
 ```jsx
+// Default usage
 <WebShortsDialog />
+
+// With a custom description
+<WebShortsDialog description="Custom help text for your app's shortcuts." />
+```
+
+**Props:**
+
+- `description` (optional): Customizes the help dialog description text. Defaults to "This dialog lists all available keyboard shortcuts for this page."
+
+#### Customizing the Description Style
+
+The help dialog description uses the CSS class `.webshorts-help-dialog-description`. You can override this class in your own CSS to further customize the appearance of the description. For example:
+
+```css
+.webshorts-help-dialog-description {
+  font-weight: 400;
+  font-size: 1rem;
+  color: #555;
+  margin-top: 0.5rem;
+}
 ```
 
 No props required - automatically uses context from WebShortsProvider.
@@ -364,43 +385,3 @@ function App() {
   );
 }
 ```
-
-## Troubleshooting
-
-### Common Issues
-
-**1. "Module not found" errors**
-Make sure you've installed all peer dependencies:
-
-```bash
-npm install @radix-ui/react-dialog sonner react react-dom
-```
-
-**2. Toasts not showing**
-Ensure Sonner is properly configured in your app:
-
-```jsx
-import { Toaster } from 'sonner';
-
-function App() {
-  return (
-    <>
-      <YourApp />
-      <Toaster />
-    </>
-  );
-}
-```
-
-**3. Dialog not styling correctly**
-Make sure Tailwind CSS is configured in your project. If you're not using Tailwind, you can override the styles with your own CSS.
-
-**4. Shortcuts not working**
-
-- Check that the WebShortsProvider wraps your entire app
-- Verify key combinations are valid (e.g., "CTRL + S" not "Ctrl + S")
-- Enable debug mode to see registration and execution feedback
-
-## License
-
-MIT

@@ -89,7 +89,6 @@ const HelpDialog = ({
           z-index: 10000;
           animation: webshorts-slideIn 200ms ease-out;
           pointer-events: auto;
-          width: 100%;
           gap: var(--webshorts-content-gap, 1rem);
           border-radius: var(--webshorts-content-border-radius, 0.5rem);
           padding: var(--webshorts-content-padding, 0 3rem 1.5rem 3rem);

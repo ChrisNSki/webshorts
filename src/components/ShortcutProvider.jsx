@@ -24,6 +24,16 @@ const ShortcutProvider = ({ children, config = null, currentPage = '/', classNam
     dialogHeight: 600,
   });
 
+  // Merge WEBSHORTS_OPTIONS from config into options state
+  React.useEffect(() => {
+    if (config && config.WEBSHORTS_OPTIONS) {
+      setOptions((prev) => ({
+        ...prev,
+        ...config.WEBSHORTS_OPTIONS,
+      }));
+    }
+  }, [config]);
+
   // Register a shortcut
   const registerShortcut = React.useCallback(
     (shortcut, page = currentPage) => {

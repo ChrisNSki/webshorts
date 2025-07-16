@@ -284,17 +284,6 @@ You can style the help dialog description using the `.webshorts-help-dialog-desc
 - `.webshorts-shortcut-description` – Shortcut description text
 - `.webshorts-shortcut-group` – Group of related shortcuts
 
-## Try the Demo
-
-Want to see WebShorts in action? Run the demo locally:
-
-```bash
-npm install
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) to view the demo and test the keyboard shortcuts.
-
 ## Documentation
 
 For complete documentation, visit the [WebShorts GitHub repository](https://github.com/ChrisNSki/webshorts) or the [live demo](https://webshorts.dev), which includes:

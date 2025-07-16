@@ -1,12 +1,23 @@
 # WebShorts
 
+WebShorts is a developer tool for creating, managing, and triggering custom keyboard shortcuts in web apps. Easily bind actions, preview events, and streamline UX testing or feature demos.
+
 A lightweight React shortcut system for global + page-level hotkeys. Drop in a provider, register with a component, and let the keys do the work.
 
-🌐 **[Live Demo](https://webshorts.dev)** | 💬 **[Discord](https://discord.gg/HXg4YxJgfX)** | 🐛 **[Issues](https://github.com/ChrisNSki/webshorts/issues)**
+## WebShorts Package
+
+- **GitHub**: [https://github.com/ChrisNSki/webshorts](https://github.com/ChrisNSki/webshorts)
+- **NPM**: [https://www.npmjs.com/package/@chrisnski/webshorts](https://www.npmjs.com/package/@chrisnski/webshorts)
+- **Demo**: [https://webshorts.dev](https://webshorts.dev)
+- **Support**: ☕ [Buy Me a Coffee](https://buymeacoffee.com/chrisnski)
 
 ## Quick Start
 
-> **Note for Next.js App Router users:** Next.js requires additional configuration to work with WebShorts. See [Next.js App Router Usage](#nextjs-app-router-usage) for important integration details.
+Get WebShorts up and running in your React project in just a few steps.
+
+### ⚠️ Next.js App Router Users
+
+Next.js requires additional configuration to work with WebShorts. See the [Compatibility](#compatibility) section for important integration details.
 
 ### 1. Install WebShorts and Dependencies
 
@@ -17,13 +28,13 @@ npm i @chrisnski/webshorts
 npx webshorts init
 ```
 
-The `npx webshorts init` command will:
+**What the `npx webshorts init` command does:**
 
-- Create a `webshorts.config.js` file in your project root
-- Automatically install `@radix-ui/react-dialog` and `sonner` as dependencies
+- Creates a `webshorts.config.js` file in your project root
+- Automatically installs `@radix-ui/react-dialog` and `sonner` as dependencies
 - Detects your package manager (npm, yarn, or pnpm) to use the appropriate install command
 
-> **Note:** You must already have `react` and `react-dom` installed (required for all React projects).
+**Note:** You must already have `react` and `react-dom` installed (required for all React projects).
 
 ### 2. Wrap your app with WebShortsProvider
 
@@ -33,7 +44,7 @@ import shortcutsConfig from './webshorts.config.js';
 
 function App() {
   return (
-    <WebShortsProvider config={shortcutsConfig}>
+    <WebShortsProvider config={shortcutsConfig} currentPage={pathname}>
       <YourApp />
       <WebShortsDialog />
     </WebShortsProvider>
@@ -41,21 +52,13 @@ function App() {
 }
 ```
 
-> **Quick Notes**
->
-> - Default styles are included automatically, but can be overridden.
-> - The `config` prop must be included!
-> - The `currentPage` prop must be included and set to your current route (e.g., from your router) for page-specific shortcuts to work.
+**Quick Notes:**
 
----
+- Default styles are included automatically, but can be overridden.
+- The config must be included!
+- The currentPage prop must be included for proper route-based shortcuts!
 
-At this point the install can be used as is, and managed from the webshorts config if you are using global shortcuts only.
-
-For page specific shortcuts, it's recommended to continue to step 3 and use Shortcut Listeners.
-
----
-
-### Adding page-specific shortcuts
+### 3. Adding page-specific shortcuts (Optional)
 
 When you want to add a shortcut that is page specific, you can do it in the config, or add a shortcut listener to the page/component the shortcut applies to.
 
@@ -81,43 +84,29 @@ function MyPage() {
 }
 ```
 
-> **Note:** For shortcuts to appear in the help dialog, always provide `shortName` and `description` props to `ShortcutListener`.
+## Compatibility
 
----
+WebShorts is designed to work with any React framework. Learn about specific setup requirements for different frameworks.
 
-## Next.js App Router Usage
+### ⚠️ Next.js App Router
 
-If you are using **Next.js App Router** (the `/app` directory), you must use a client wrapper for any context provider or hook-based library, including WebShorts. This is required to support both SSR/metadata and client context/hooks.
+**⚠️ CRITICAL: Client Wrappers Required**
 
-**Example:**
+If you are using Next.js App Router (the `/app` directory), you MUST use client wrappers for both the WebShortsProvider and ShortcutListener components. This is not optional - you WILL encounter SSR/hydration issues without them.
 
-```jsx
-// app/layout.js (Server Component)
-export const metadata = { ... };
-import WebShortsProviderWrapper from '../components/WebShortsProviderWrapper';
+#### Setup Instructions
 
-export default function RootLayout({ children }) {
-  return (
-    <html>
-      <body>
-        <WebShortsProviderWrapper>
-          {children}
-        </WebShortsProviderWrapper>
-      </body>
-    </html>
-  );
-}
-```
+**1. Create the Client Provider Wrapper**
 
 ```jsx
-// components/WebShortsProviderWrapper.jsx (Client Component)
+// components/ClientWebShortsProvider.jsx
 'use client';
 import { useEffect, useState } from 'react';
-import { usePathname } from 'next/navigation';
 import { WebShortsProvider, WebShortsDialog } from '@chrisnski/webshorts';
-import webshortsConfig from '../../../webshorts.config';
+import { usePathname } from 'next/navigation';
+import { Toaster } from 'sonner';
 
-export default function WebShortsProviderWrapper({ children, className }) {
+export default function ClientWebShortsProvider({ children, config, className }) {
   const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
 
@@ -125,100 +114,149 @@ export default function WebShortsProviderWrapper({ children, className }) {
     setMounted(true);
   }, []);
 
-  // Always render the provider to keep hook order stable
+  if (!mounted) {
+    // Return children without the provider during SSR
+    return children;
+  }
+
   return (
-    <WebShortsProvider config={webshortsConfig} currentPage={pathname} className={className}>
-      {mounted ? (
-        <>
-          {children}
-          <WebShortsDialog />
-        </>
-      ) : null}
+    <WebShortsProvider config={config} currentPage={pathname} className={className}>
+      {children}
+      <WebShortsDialog />
+      <Toaster position='bottom-right' richColors />
     </WebShortsProvider>
   );
 }
 ```
 
-> **Important:** Never return early before rendering the provider. Always call hooks in the same order every render to avoid React hook order errors.
-
----
-
-## Troubleshooting
-
-### React Hook Order Error
-
-If you see an error like:
-
-```
-React has detected a change in the order of Hooks called by WebShortsProviderWrapper. This will lead to bugs and errors if not fixed.
-```
-
-**Solution:**
-
-- Never return early before all hooks are called.
-- Always render the provider, and conditionally render children inside it if needed.
-
----
-
-## API Reference
-
-### WebShortsProvider
-
-The main provider component that wraps your app.
+**2. Create the App Wrapper**
 
 ```jsx
-<WebShortsProvider currentPage='/dashboard' className='my-custom-class' style={{ padding: '1rem' }} />
+// components/WebShortsProviderWrapper.jsx
+'use client';
+import ClientWebShortsProvider from './ClientWebShortsProvider';
+import webshortsConfig from '../webshorts.config';
+
+export default function WebShortsProviderWrapper({ children, className }) {
+  return (
+    <ClientWebShortsProvider config={webshortsConfig} className={className}>
+      {children}
+    </ClientWebShortsProvider>
+  );
+}
 ```
 
-**Props:**
-
-- `config` - Shortcut configuration object (optional, will auto-load from webshorts.config.js if not provided)
-- `currentPage` - Current page/route (**required for route-based shortcuts**; e.g., use `usePathname()` in Next.js or `location.pathname` in React Router)
-- `className` - CSS class name
-- `style` - Inline styles
-
-### ShortcutListener
-
-Register page-specific shortcuts.
+**3. Use in Root Layout**
 
 ```jsx
-<ShortcutListener
-  keys='CTRL + S'
-  shortName='Save'
-  description='Save the document'
-  action={handleSave}
-  page='/dashboard' // Optional, defaults to current page
-/>
+// app/layout.js (Server Component)
+export const metadata = {
+  title: 'My App',
+  description: 'My app description',
+};
+
+import WebShortsProviderWrapper from '../components/WebShortsProviderWrapper';
+
+export default function RootLayout({ children }) {
+  return (
+    <html>
+      <body>
+        <WebShortsProviderWrapper>{children}</WebShortsProviderWrapper>
+      </body>
+    </html>
+  );
+}
 ```
 
-**Props:**
-
-- `keys` - Key combination (e.g., "CTRL + SHIFT + A")
-- `action` - Function to execute when shortcut is pressed
-- `shortName` - Short name for the help dialog (required for dialog display)
-- `description` - Description for the help dialog (required for dialog display)
-- `page` - Page where this shortcut is active (optional)
-- `children` - Optional children to render
-
-### WebShortsDialog
-
-The help dialog component that shows all available shortcuts. Now includes accessibility improvements for screen readers.
+**4. Create Client Wrapper for ShortcutListener (REQUIRED)**
 
 ```jsx
-// Default usage
-<WebShortsDialog />
+// components/ClientShortcutListener.jsx
+'use client';
+import { useEffect, useState } from 'react';
+import { ShortcutListener } from '@chrisnski/webshorts';
 
-// With a custom description
-<WebShortsDialog description="Custom help text for your app's shortcuts." />
+export default function ClientShortcutListener({ children, keys, action, shortName, description }) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    // Return the children without the ShortcutListener wrapper during SSR
+    return children;
+  }
+
+  return (
+    <ShortcutListener keys={keys} action={action} shortName={shortName} description={description}>
+      {children}
+    </ShortcutListener>
+  );
+}
 ```
 
-**Props:**
+**5. Usage Example**
 
-- `description` (optional): Customizes the help dialog description text. Defaults to "This dialog lists all available keyboard shortcuts for this page."
+```jsx
+// Instead of using ShortcutListener directly:
+<ShortcutListener keys='CTRL + S' action={handleSave} shortName='Save' description='Save content'>
+  <div>Press CTRL + S to save</div>
+</ShortcutListener>;
 
-#### Customizing the Description Style
+// Use the client wrapper:
+import ClientShortcutListener from '@/components/ClientShortcutListener';
 
-The help dialog description uses the CSS class `.webshorts-help-dialog-description`. You can override this class in your own CSS to further customize the appearance of the description. For example:
+<ClientShortcutListener keys='CTRL + S' action={handleSave} shortName='Save' description='Save content'>
+  <div>Press CTRL + S to save</div>
+</ClientShortcutListener>;
+```
+
+#### Why Both Wrappers Are Required
+
+- **Server Components** - Next.js App Router uses server components by default
+- **Context Providers** - WebShortsProvider is a client-side context provider
+- **Shortcut Listeners** - ShortcutListener components need client-side mounting
+- **SSR/Hydration Race** - Both components will fail in production without wrappers
+- **Guaranteed Issues** - This is not optional - you WILL encounter problems without these wrappers
+
+## Customizing the Dialog
+
+WebShorts provides extensive customization options for the help dialog, including custom text, styling, and behavior.
+
+### Dialog Props & CSS Customization
+
+The `WebShortsDialog` component supports several props and CSS classes for deep customization:
+
+- **description**: Custom help text for the dialog (prop or config)
+- **className**: Custom CSS class for the dialog container
+- **style**: Inline styles for the dialog container
+- **triggerKey**: Change the key combination to open the dialog
+- **title**: Custom dialog title
+- **footer**: Custom dialog footer
+
+```jsx
+<WebShortsDialog description="Custom help text for your app's shortcuts." className='my-dialog' style={{ backgroundColor: '#222' }} />
+```
+
+```js
+// webshorts.config.js
+export default {
+  dialog: {
+    className: 'my-custom-dialog',
+    style: { backgroundColor: '#f0f0f0', borderRadius: '12px' },
+    title: 'Keyboard Shortcuts',
+    description: 'Use these shortcuts to navigate and interact with the app',
+    footer: 'Press ESC to close',
+    triggerKey: 'CTRL + SHIFT + H',
+  },
+  // ... rest of config
+};
+```
+
+### Customizing the Description
+
+You can style the help dialog description using the `.webshorts-help-dialog-description` CSS class:
 
 ```css
 .webshorts-help-dialog-description {
@@ -229,159 +267,39 @@ The help dialog description uses the CSS class `.webshorts-help-dialog-descripti
 }
 ```
 
-No props required - automatically uses context from WebShortsProvider.
+### Available CSS Classes
 
----
+- `.webshorts-dialog` – Main dialog container
+- `.webshorts-dialog-header` – Dialog header section
+- `.webshorts-dialog-content` – Dialog content area
+- `.webshorts-dialog-footer` – Dialog footer section
+- `.webshorts-help-dialog-description` – Help dialog description
+- `.webshorts-shortcut-item` – Individual shortcut item
+- `.webshorts-shortcut-keys` – Key combination display
+- `.webshorts-shortcut-description` – Shortcut description text
+- `.webshorts-shortcut-group` – Group of related shortcuts
 
-### useShortcuts Hook
+## Try the Demo
 
-The `useShortcuts` hook provides **programmatic access** to the WebShorts context, allowing you to register shortcuts dynamically, control the help dialog, and access the current shortcut state.
+Want to see WebShorts in action? Run the demo locally:
 
-> **Note:** `registerShortcut` expects a shortcut object, not separate parameters.
-
-```jsx
-import { useShortcuts } from '@chrisnski/webshorts';
-
-function MyComponent() {
-  const {
-    shortcuts, // Array of all registered shortcuts
-    registerShortcut, // Function to register new shortcuts
-    unregisterShortcut, // Function to remove shortcuts
-    helpDialogOpen, // Boolean - is help dialog open?
-    setHelpDialogOpen, // Function to open/close help dialog
-    options, // Current WebShorts options
-    currentPage, // Current page path
-  } = useShortcuts();
-
-  // Use the context values
-}
+```bash
+npm install
+npm run dev
 ```
 
----
+Open [http://localhost:3000](http://localhost:3000) to view the demo and test the keyboard shortcuts.
 
-## Accessibility
+## Documentation
 
-WebShortsDialog is fully accessible and includes a hidden description for screen readers, ensuring compliance with accessibility best practices.
+For complete documentation, visit the [WebShorts GitHub repository](https://github.com/ChrisNSki/webshorts) or the [live demo](https://webshorts.dev), which includes:
 
----
-
-## Configuration
-
-### Configuration File
-
-WebShorts uses a configuration file to define shortcuts. Create a `webshorts.config.js` file in your project root:
-
-```js
-// webshorts.config.js
-const shortcutsConfig = {
-  WEBSHORTS_OPTIONS: {
-    debug: false,
-    showDescriptions: true,
-    helpDialogColumns: 2,
-    dialogWidth: 800,
-    dialogHeight: 600,
-  },
-  '*': [
-    // Global shortcuts here
-  ],
-  '/dashboard': [
-    // Page-specific shortcuts here
-  ],
-};
-
-export default shortcutsConfig;
-```
-
-WebShorts will automatically load this file when the WebShortsProvider initializes. No need to import it manually!
-
-### WEBSHORTS_OPTIONS
-
-```js
-{
-  debug: false,              // Enable debug toasts
-  showDescriptions: true,    // Show descriptions in help dialog
-  helpDialogColumns: 2,      // Number of columns in help dialog
-  dialogWidth: 800,          // Help dialog width (px)
-  dialogHeight: 600,         // Help dialog height (px)
-}
-```
-
-### Shortcut Configuration
-
-```js
-{
-  keys: "CTRL + S",           // Key combination
-  shortName: "Save",          // Display name in help dialog
-  description: "Save the file", // Description (optional)
-  action: () => saveFile(),   // Function to execute
-  hiddenNotes: "Internal note" // Hidden notes (optional)
-}
-```
-
-## Key Combinations
-
-Supported key combinations:
-
-- `CTRL + SHIFT + A`
-- `ALT + 1`
-- `META + S` (Cmd on Mac, Ctrl on Windows)
-- `SHIFT + ?` (Universal help dialog)
-
-## Examples
-
-### Next.js App Router
-
-```jsx
-// app/layout.jsx
-import { WebShortsProvider, WebShortsDialog } from '@chrisnski/webshorts';
-
-export default function RootLayout({ children }) {
-  return (
-    <html>
-      <body>
-        <WebShortsProvider>
-          {children}
-          <WebShortsDialog />
-        </WebShortsProvider>
-      </body>
-    </html>
-  );
-}
-```
-
-### Create React App
-
-```jsx
-// App.jsx
-import { WebShortsProvider, WebShortsDialog } from '@chrisnski/webshorts';
-
-function App() {
-  return (
-    <WebShortsProvider>
-      <div className='App'>
-        <Header />
-        <Main />
-        <Footer />
-      </div>
-      <WebShortsDialog />
-    </WebShortsProvider>
-  );
-}
-```
-
-### With React Router
-
-```jsx
-import { useLocation } from 'react-router-dom';
-import { WebShortsProvider } from '@chrisnski/webshorts';
-
-function App() {
-  const location = useLocation();
-
-  return (
-    <WebShortsProvider config={shortcutsConfig} currentPage={location.pathname}>
-      <Router>{/* Your routes */}</Router>
-    </WebShortsProvider>
-  );
-}
-```
+- **Quick Start** - Installation and basic setup
+- **Features** - Overview of WebShorts capabilities
+- **Compatibility** - Framework-specific setup instructions
+- **Configuring WebShorts** - Configuration options and examples
+- **WebShorts Provider** - Provider component documentation
+- **Shortcut Listener** - Adding page-specific shortcuts
+- **WebShorts Dialog** - Customizing the help dialog
+- **Custom Styling** - Styling and theming options
+- **useShortcuts Hooks** - Available hooks and their usage

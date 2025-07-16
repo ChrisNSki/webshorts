@@ -1,4 +1,4 @@
-# WebShorts
+# <img src="https://github.com/ChrisNSki/webshorts-demo/raw/aef3354281ff115a62df1cd503e21c6dafcc9b14/public/WebShorts.svg" alt="WebShorts Logo" width="40" height="35"/> WebShorts
 
 WebShorts is a developer tool for creating, managing, and triggering custom keyboard shortcuts in web apps. Easily bind actions, preview events, and streamline UX testing or feature demos.
 
@@ -10,6 +10,11 @@ A lightweight React shortcut system for global + page-level hotkeys. Drop in a p
 - **NPM**: [https://www.npmjs.com/package/@chrisnski/webshorts](https://www.npmjs.com/package/@chrisnski/webshorts)
 - **Demo**: [https://webshorts.dev](https://webshorts.dev)
 - **Support**: ☕ [Buy Me a Coffee](https://buymeacoffee.com/chrisnski)
+<p align="center">
+<img src="https://github.com/ChrisNSki/webshorts-demo/raw/aef3354281ff115a62df1cd503e21c6dafcc9b14/public/DialogScreenshot.png" alt="WebShorts Screenshot" width="600"/>
+<br>
+(Screenshot of WebShorts Dialog)
+</p>
 
 ## Quick Start
 

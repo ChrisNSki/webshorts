@@ -235,10 +235,11 @@ const HelpDialog = ({
             }}
           />
           <Dialog.Content
-            className={`webshorts-content ${contentClassName}`}
+            className={`webshorts-content ${className} ${contentClassName}`}
             style={{
               width: options.dialogWidth || 800,
               height: options.dialogHeight || 600,
+              ...style,
               '--webshorts-content-bg': contentStyle['--webshorts-content-bg'],
               '--webshorts-content-gap': contentStyle['--webshorts-content-gap'],
               '--webshorts-content-border-radius': contentStyle['--webshorts-content-border-radius'],

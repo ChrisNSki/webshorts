@@ -39,5 +39,17 @@ export function isValidKeyCombination(keyString) {
   if (!keyString) return false;
 
   const keyObj = parseKeys(keyString);
-  return keyObj && keyObj.key; // Must have at least one key
+  return Boolean(keyObj?.key);
+}
+
+/**
+ * Find the active shortcut for a keyboard event. Page shortcuts take precedence
+ * over global shortcuts with the same key combination.
+ */
+export function findActiveShortcut(shortcuts, pressedKeys, currentPage) {
+  const activeShortcuts = Array.from(shortcuts)
+    .filter((shortcut) => shortcut.page === currentPage || shortcut.page === '*')
+    .sort((a, b) => Number(b.page === currentPage) - Number(a.page === currentPage));
+
+  return activeShortcuts.find((shortcut) => matchShortcut(pressedKeys, shortcut.keys)) ?? null;
 }

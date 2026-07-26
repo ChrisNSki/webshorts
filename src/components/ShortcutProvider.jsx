@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { eventToKeyObj, matchShortcut } from '../utils/matchShortcut.js';
+import { eventToKeyObj, findActiveShortcut } from '../utils/matchShortcut.js';
 import { parseKeys, keysToString } from '../utils/parseKeys.js';
 import { debugShortcutExecution, debugShortcutNotFound, debugHelpDialog } from '../utils/debugTools.js';
 
@@ -99,30 +99,29 @@ const ShortcutProvider = ({ children, config = null, currentPage = '/', classNam
       }
 
       // Check registered shortcuts
-      for (const [id, shortcut] of shortcuts) {
-        if (matchShortcut(pressedKeys, shortcut.keys)) {
-          event.preventDefault();
+      const shortcut = findActiveShortcut(shortcuts.values(), pressedKeys, currentPage);
+      if (shortcut) {
+        event.preventDefault();
 
-          try {
-            if (typeof shortcut.action === 'function') {
-              shortcut.action();
-              if (options.debug) {
-                debugShortcutExecution(pressedKeysString, shortcut.action.name || 'anonymous', true);
-              }
-            } else {
-              console.warn(`Shortcut action is not a function: ${shortcut.action}`);
-              if (options.debug) {
-                debugShortcutExecution(pressedKeysString, 'invalid', false, 'Action is not a function');
-              }
-            }
-          } catch (error) {
-            console.error('Error executing shortcut:', error);
+        try {
+          if (typeof shortcut.action === 'function') {
+            shortcut.action();
             if (options.debug) {
-              debugShortcutExecution(pressedKeysString, shortcut.action.name || 'anonymous', false, error.message);
+              debugShortcutExecution(pressedKeysString, shortcut.action.name || 'anonymous', true);
+            }
+          } else {
+            console.warn(`Shortcut action is not a function: ${shortcut.action}`);
+            if (options.debug) {
+              debugShortcutExecution(pressedKeysString, 'invalid', false, 'Action is not a function');
             }
           }
-          return;
+        } catch (error) {
+          console.error('Error executing shortcut:', error);
+          if (options.debug) {
+            debugShortcutExecution(pressedKeysString, shortcut.action.name || 'anonymous', false, error.message);
+          }
         }
+        return;
       }
 
       // No shortcut found

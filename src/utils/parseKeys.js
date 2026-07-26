@@ -4,9 +4,10 @@
  * @returns {object} Normalized key object
  */
 export function parseKeys(keyString) {
-  if (!keyString) return null;
+  if (typeof keyString !== 'string' || !keyString.trim()) return null;
 
   const parts = keyString.split('+').map((part) => part.trim().toUpperCase());
+  if (parts.some((part) => !part)) return null;
 
   const keyObj = {
     ctrl: false,
@@ -15,6 +16,8 @@ export function parseKeys(keyString) {
     meta: false,
     key: null,
   };
+
+  let primaryKeyCount = 0;
 
   for (const part of parts) {
     switch (part) {
@@ -34,11 +37,12 @@ export function parseKeys(keyString) {
         keyObj.meta = true;
         break;
       default:
+        primaryKeyCount += 1;
         keyObj.key = part;
     }
   }
 
-  return keyObj;
+  return primaryKeyCount === 1 ? keyObj : null;
 }
 
 /**

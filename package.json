@@ -1,6 +1,6 @@
 {
   "type": "module",
-  "name": "webshorts",
+  "name": "@chrisnski/webshorts",
   "version": "1.0.18",
   "description": "A lightweight react shortcut system with global and page-level support, built for developer sanity of quickly managing shortcut systems.",
   "main": "./dist/index.cjs",
@@ -27,7 +27,7 @@
     "prepublishOnly": "npm run build"
   },
   "bin": {
-    "webshorts": "bin/init.js"
+    "webshorts": "./bin/init.js"
   },
   "repository": {
     "type": "git",

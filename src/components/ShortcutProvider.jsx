@@ -43,7 +43,7 @@ const ShortcutProvider = ({ children, config = null, currentPage = '/', classNam
         return;
       }
 
-      const shortcutId = `${page}:${shortcut.keys}`;
+      const shortcutId = `${page}:${shortcut.useCode ? 'code' : 'key'}:${shortcut.keys}`;
       setShortcuts((prev) => {
         const newShortcuts = new Map(prev);
         newShortcuts.set(shortcutId, {
@@ -65,8 +65,8 @@ const ShortcutProvider = ({ children, config = null, currentPage = '/', classNam
 
   // Unregister a shortcut
   const unregisterShortcut = React.useCallback(
-    (keys, page = currentPage) => {
-      const shortcutId = `${page}:${keys}`;
+    (keys, page = currentPage, useCode = false) => {
+      const shortcutId = `${page}:${useCode ? 'code' : 'key'}:${keys}`;
       setShortcuts((prev) => {
         const newShortcuts = new Map(prev);
         newShortcuts.delete(shortcutId);

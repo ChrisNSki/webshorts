@@ -89,6 +89,33 @@ function MyPage() {
 }
 ```
 
+### Physical and numpad-specific keys
+
+Shortcuts match `KeyboardEvent.key` by default, preserving the existing character-based behavior. To distinguish a physical key such as numpad `1` from the top-row `1`, opt into `KeyboardEvent.code` for that individual shortcut with `useCode`.
+
+```jsx
+<ShortcutListener
+  keys='NUMPAD1'
+  useCode
+  shortName='Numpad action'
+  description='Runs only from numpad 1'
+  action={handleNumpadAction}
+/>
+```
+
+The same flag is supported in `webshorts.config.js`:
+
+```js
+{
+  keys: 'CTRL + NUMPAD1',
+  useCode: true,
+  shortName: 'Numpad shortcut',
+  action: () => console.log('Numpad 1 pressed'),
+}
+```
+
+Leave `useCode` unset or `false` for normal character-based matching. Code-based shortcuts are useful for numpad keys, physical key positions, and layouts where the printed character may vary. If a code-based shortcut and a normal shortcut both match the same event on the same page, the more specific code-based shortcut takes precedence.
+
 ## Compatibility
 
 WebShorts is designed to work with any React framework. Learn about specific setup requirements for different frameworks.

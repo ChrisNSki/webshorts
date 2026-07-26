@@ -27,6 +27,7 @@ export function eventToKeyObj(event) {
     alt: event.altKey,
     meta: event.metaKey,
     key: event.key.toUpperCase(),
+    code: event.code ? event.code.toUpperCase() : null,
   };
 }
 
@@ -49,7 +50,16 @@ export function isValidKeyCombination(keyString) {
 export function findActiveShortcut(shortcuts, pressedKeys, currentPage) {
   const activeShortcuts = Array.from(shortcuts)
     .filter((shortcut) => shortcut.page === currentPage || shortcut.page === '*')
-    .sort((a, b) => Number(b.page === currentPage) - Number(a.page === currentPage));
+    .sort(
+      (a, b) =>
+        Number(b.page === currentPage) - Number(a.page === currentPage) ||
+        Number(Boolean(b.useCode)) - Number(Boolean(a.useCode)),
+    );
 
-  return activeShortcuts.find((shortcut) => matchShortcut(pressedKeys, shortcut.keys)) ?? null;
+  return (
+    activeShortcuts.find((shortcut) => {
+      const key = shortcut.useCode ? pressedKeys.code : pressedKeys.key;
+      return matchShortcut({ ...pressedKeys, key }, shortcut.keys);
+    }) ?? null
+  );
 }

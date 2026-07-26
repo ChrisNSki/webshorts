@@ -6,6 +6,7 @@ export interface KeyObject {
   alt: boolean;
   meta: boolean;
   key: string | null;
+  code?: string | null;
 }
 
 export interface Shortcut {
@@ -13,6 +14,12 @@ export interface Shortcut {
   action: () => void;
   description?: string;
   shortName?: string;
+  /**
+   * Match KeyboardEvent.code instead of KeyboardEvent.key.
+   * Useful for physical-key and numpad-specific shortcuts.
+   * @default false
+   */
+  useCode?: boolean;
   [key: string]: unknown;
 }
 
@@ -58,7 +65,7 @@ export function WebShortsDialog(props: WebShortsDialogProps): ReactNode;
 export function useShortcuts(): {
   shortcuts: Array<Shortcut & { page: string; keysString: string; keys: unknown }>;
   registerShortcut: (shortcut: Shortcut, page?: string) => void;
-  unregisterShortcut: (keys: string, page?: string) => void;
+  unregisterShortcut: (keys: string, page?: string, useCode?: boolean) => void;
   helpDialogOpen: boolean;
   setHelpDialogOpen: (open: boolean) => void;
   options: WebShortsOptions;
@@ -70,7 +77,7 @@ export function keysToString(keyObj: KeyObject | null): string;
 export function matchShortcut(pressed: KeyObject, shortcut: KeyObject | string): boolean;
 export function eventToKeyObj(event: KeyboardEvent): KeyObject;
 export function isValidKeyCombination(keyString: string): boolean;
-export function findActiveShortcut<T extends { page: string; keys: KeyObject | string }>(
+export function findActiveShortcut<T extends { page: string; keys: KeyObject | string; useCode?: boolean }>(
   shortcuts: Iterable<T>,
   pressedKeys: KeyObject,
   currentPage: string,

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useShortcuts } from './ShortcutProvider.jsx';
 
-const ShortcutListener = ({ keys, action, description, shortName, page = null, children = null }) => {
+const ShortcutListener = ({ keys, action, description, shortName, page = null, children = null, useCode = false }) => {
   const { registerShortcut, unregisterShortcut, currentPage } = useShortcuts();
   const targetPage = page || currentPage;
 
@@ -12,13 +12,13 @@ const ShortcutListener = ({ keys, action, description, shortName, page = null, c
     }
 
     // Register the shortcut with all metadata
-    registerShortcut({ keys, action, description, shortName }, targetPage);
+    registerShortcut({ keys, action, description, shortName, useCode }, targetPage);
 
     // Cleanup: unregister when component unmounts
     return () => {
-      unregisterShortcut(keys, targetPage);
+      unregisterShortcut(keys, targetPage, useCode);
     };
-  }, [keys, action, description, shortName, targetPage, registerShortcut, unregisterShortcut]);
+  }, [keys, action, description, shortName, targetPage, useCode, registerShortcut, unregisterShortcut]);
 
   return children || null;
 };

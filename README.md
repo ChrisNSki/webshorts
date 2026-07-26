@@ -7,7 +7,7 @@ A lightweight React shortcut system for global + page-level hotkeys. Drop in a p
 ## WebShorts Package
 
 - **GitHub**: [https://github.com/ChrisNSki/webshorts](https://github.com/ChrisNSki/webshorts)
-- **NPM**: [https://www.npmjs.com/package/@chrisnski/webshorts](https://www.npmjs.com/package/@chrisnski/webshorts)
+- **NPM**: [https://www.npmjs.com/package/webshorts](https://www.npmjs.com/package/webshorts)
 - **Demo**: [https://webshorts.dev](https://webshorts.dev)
 - **Support**: ☕ [Buy Me a Coffee](https://buymeacoffee.com/chrisnski)
 <p align="center">
@@ -29,7 +29,7 @@ Next.js requires additional configuration to work with WebShorts. See the [Compa
 Install WebShorts and let it automatically install the required dependencies:
 
 ```bash
-npm i @chrisnski/webshorts
+npm i webshorts
 npx webshorts init
 ```
 
@@ -44,7 +44,7 @@ npx webshorts init
 ### 2. Wrap your app with WebShortsProvider
 
 ```jsx
-import { WebShortsProvider, WebShortsDialog } from '@chrisnski/webshorts';
+import { WebShortsProvider, WebShortsDialog } from 'webshorts';
 import shortcutsConfig from './webshorts.config.js';
 
 function App() {
@@ -68,7 +68,7 @@ function App() {
 When you want to add a shortcut that is page specific, you can do it in the config, or add a shortcut listener to the page/component the shortcut applies to.
 
 ```jsx
-import { ShortcutListener } from '@chrisnski/webshorts';
+import { ShortcutListener } from 'webshorts';
 
 function MyPage() {
   const handleSave = () => {
@@ -107,7 +107,7 @@ If you are using Next.js App Router (the `/app` directory), you MUST use client 
 // components/ClientWebShortsProvider.jsx
 'use client';
 import { useEffect, useState } from 'react';
-import { WebShortsProvider, WebShortsDialog } from '@chrisnski/webshorts';
+import { WebShortsProvider, WebShortsDialog } from 'webshorts';
 import { usePathname } from 'next/navigation';
 import { Toaster } from 'sonner';
 
@@ -179,7 +179,7 @@ export default function RootLayout({ children }) {
 // components/ClientShortcutListener.jsx
 'use client';
 import { useEffect, useState } from 'react';
-import { ShortcutListener } from '@chrisnski/webshorts';
+import { ShortcutListener } from 'webshorts';
 
 export default function ClientShortcutListener({ children, keys, action, shortName, description }) {
   const [mounted, setMounted] = useState(false);

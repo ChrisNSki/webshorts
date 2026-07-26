@@ -62,7 +62,7 @@ try {
   console.log('   - Use ShortcutListener to register shortcuts');
   console.log('   - Press Shift + ? to open the help dialog');
   console.log('\n📝 Example:');
-  console.log('   import { WebShortsProvider, WebShortsDialog } from "@chrisnski/webshorts";');
+  console.log('   import { WebShortsProvider, WebShortsDialog } from "webshorts";');
   console.log('   import shortcutsConfig from "./webshorts.config.js";');
   console.log('   <WebShortsProvider config={shortcutsConfig}>');
 } catch (err) {
